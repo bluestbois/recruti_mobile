@@ -13,6 +13,7 @@ import com.codename1.io.NetworkManager;
 import com.codename1.ui.Form;
 import com.codename1.ui.events.ActionListener;
 import com.mycompany.myapp.entities.Forum;
+import com.mycompany.myapp.entities.Post;
 import com.mycompany.myapp.gui.ListForumsForm;
 //import com.mycompany.myapp.entities.Task;
 import com.mycompany.myapp.utils.Statics;
@@ -45,7 +46,7 @@ public class ServiceForum {
     }
 
     public boolean addForum(Forum f) {
-        String url = Statics.BASE_URL + "/addForumJSON/new?title=" + f.getTitle() + "&description=" + f.getDescription(); //création de l'URL
+        String url = Statics.BASE_URL+"/addForumJSON/new?title="+f.getTitle()+"&description="+ f.getDescription(); //création de l'URL
         req.setUrl(url);
         req.addResponseListener(new ActionListener<NetworkEvent>() {
             @Override
@@ -66,12 +67,17 @@ public class ServiceForum {
             List<Map<String, Object>> list = (List<Map<String, Object>>) tasksListJson.get("root");
             for (Map<String, Object> obj : list) {
                 Forum f = new Forum();
+               
 
                 float id = Float.parseFloat(obj.get("id").toString());
                 f.setId((int) id);
                 f.setTitle(obj.get("title").toString());
 
                 f.setDescription(obj.get("description").toString());
+                
+                System.out.println("hellooo"+obj.get("posts").getClass());
+                
+               // f.setPosts((ArrayList<Post>[]) obj.get("posts"));
                 forums.add(f);
             }
         } catch (IOException ex) {
@@ -108,8 +114,8 @@ public class ServiceForum {
         NetworkManager.getInstance().addToQueueAndWait(req);
        
     }
-    public boolean modifForum(Forum f,int id ) {
-        String url = Statics.BASE_URL + "/updateForumJSON/"+id+"?title=" + f.getTitle() + "&description=" + f.getDescription(); //création de l'URL
+    public boolean modifForum(Forum f) {
+        String url = Statics.BASE_URL + "/updateForumJSON/"+f.getId()+"?title=" + f.getTitle() + "&description=" + f.getDescription(); //création de l'URL
         req.setUrl(url);
         req.addResponseListener(new ActionListener<NetworkEvent>() {
             @Override
@@ -120,5 +126,18 @@ public class ServiceForum {
         });
         NetworkManager.getInstance().addToQueueAndWait(req);
         return resultOK;
+    }
+    public void detailForum(int id ) {
+        String url = Statics.BASE_URL + "/showForumJSON/"+id; //création de l'URL
+        req.setUrl(url);
+        req.addResponseListener(new ActionListener<NetworkEvent>() {
+            @Override
+            public void actionPerformed(NetworkEvent evt) {
+                resultOK = req.getResponseCode() == 200; 
+                req.removeResponseListener(this);
+            }
+        });
+        NetworkManager.getInstance().addToQueueAndWait(req);
+       
     }
 }

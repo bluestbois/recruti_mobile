@@ -16,31 +16,32 @@ import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.events.ActionListener;
 import com.codename1.ui.layouts.BoxLayout;
 import com.mycompany.myapp.entities.Forum;
+import com.mycompany.myapp.entities.Post;
 import com.mycompany.myapp.services.ServiceForum;
+import com.mycompany.myapp.services.ServicePost;
 
 /**
  *
  * @author ASUS
  */
-public class ModifForumForm extends Form {
+public class ModifPostForm extends Form {
 
     Forum current;
 
-    public ModifForumForm(Form previous, Forum f) {
-
-        setTitle("Update Forum");
+    public ModifPostForm(Form previous, Post p) {
+        setTitle("Update Post");
         setLayout(BoxLayout.y());
-        System.out.println("Forum a modif "+f);
-        int id = f.getId();
+        System.out.println("Post a modif " + p);
+        int id = p.getId();
+        System.out.println("id Post"+id);
         TextField tfTitleM = new TextField();
         TextField tfDescriptionM = new TextField();
-        TextField tfIdM = new TextField();
-        
+
         Button btnValider = new Button("Update Forum");
-        
-        tfTitleM.setText(f.getTitle());
-        tfDescriptionM.setText(f.getDescription());
-        
+
+        tfTitleM.setText(p.getTitle());
+        tfDescriptionM.setText(p.getDescription());
+
         addAll(tfTitleM, tfDescriptionM, btnValider);
         btnValider.addActionListener(new ActionListener() {
             @Override
@@ -50,11 +51,10 @@ public class ModifForumForm extends Form {
                 } else {
                     try {
 
-                        Forum f = new Forum(tfTitleM.getText(), tfDescriptionM.getText(),id);
-                        if (ServiceForum.getInstance().modifForum(f)) {
+                        Post p = new Post(tfTitleM.getText(), tfDescriptionM.getText(), id);
+                        if (ServicePost.getInstance().modifPost(p)) {
                             Dialog.show("Success", "Connection accepted", new Command("OK"));
                             Preferences.clearAll();
-                            new ListForumsForm().show();
                         } else {
                             Dialog.show("ERROR", "Server error", new Command("OK"));
                         }

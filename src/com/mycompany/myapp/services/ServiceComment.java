@@ -11,7 +11,7 @@ import com.codename1.io.JSONParser;
 import com.codename1.io.NetworkEvent;
 import com.codename1.io.NetworkManager;
 import com.codename1.ui.events.ActionListener;
-import com.mycompany.myapp.entities.Forum;
+import com.mycompany.myapp.entities.Comment;
 import com.mycompany.myapp.entities.Post;
 import com.mycompany.myapp.utils.Statics;
 import java.io.IOException;
@@ -23,67 +23,71 @@ import java.util.Map;
  *
  * @author ASUS
  */
-public class ServicePost {
+public class ServiceComment {
+    
+     public ArrayList<Comment> comments;
 
-    public ArrayList<Post> posts;
-
-    public static ServicePost instance = null;
+    public static ServiceComment instance = null;
     public boolean resultOK;
     private ConnectionRequest req;
 
-    private ServicePost() {
+    private ServiceComment() {
         req = new ConnectionRequest();
     }
 
-    public static ServicePost getInstance() {
+    public static ServiceComment getInstance() {
         if (instance == null) {
-            instance = new ServicePost();
+            instance = new ServiceComment();
         }
         return instance;
     }
 
-    public ArrayList<Post> parsePosts(String jsonText) {
+    public ArrayList<Comment> parsePosts(String jsonText) {
         try {
-            posts = new ArrayList<>();
+            comments = new ArrayList<>();
             JSONParser j = new JSONParser();
             Map<String, Object> tasksListJson = j.parseJSON(new CharArrayReader(jsonText.toCharArray()));
             List<Map<String, Object>> list = (List<Map<String, Object>>) tasksListJson.get("root");
             for (Map<String, Object> obj : list) {
-                Post f = new Post();
+                Comment f = new Comment();
 
                 float id = Float.parseFloat(obj.get("id").toString());
                 f.setId((int) id);
-                f.setTitle(obj.get("title").toString());
+                f.setContent(obj.get("content").toString());
 
-                f.setDescription(obj.get("description").toString());
+                
+                float rating = Float.parseFloat(obj.get("rating").toString());
+                f.setRating((int) rating);
+                
 
                 System.out.print(obj);
 
-                posts.add(f);
+                comments.add(f);
             }
         } catch (IOException ex) {
 
         }
-        return posts;
+        return comments;
     }
 
-    public ArrayList<Post> getPosts(int id) {
-        String url = Statics.BASE_URL + "/showForumJSON/" + id;
+    
+    
+     public ArrayList<Comment> getComments(int id) {
+        String url = Statics.BASE_URL + "/showPostJSON/" + id;
         req.setUrl(url);
         req.setPost(false);
         req.addResponseListener(new ActionListener<NetworkEvent>() {
             @Override
             public void actionPerformed(NetworkEvent evt) {
-                posts = parsePosts(new String(req.getResponseData()));
+                comments = parsePosts(new String(req.getResponseData()));
                 req.removeResponseListener(this);
             }
         });
         NetworkManager.getInstance().addToQueueAndWait(req);
-        return posts;
+        return comments;
     }
-
-    public boolean addPost(Post p, int id) {
-        String url = Statics.BASE_URL + "/addPostJSON/new/" + id + "?title=" + p.getTitle() + "&description=" + p.getDescription(); //création de l'URL
+      public boolean addComment(Comment c, int id) {
+        String url = Statics.BASE_URL + "/addCommentJSON/new/" + id + "?content=" + c.getContent()+ "&rating=" + c.getRating(); //création de l'URL
         req.setUrl(url);
         req.addResponseListener(new ActionListener<NetworkEvent>() {
             @Override
@@ -95,10 +99,9 @@ public class ServicePost {
         NetworkManager.getInstance().addToQueueAndWait(req);
         return resultOK;
     }
-
-    public void deletePost(int id) {
+       public void deleteComment(int id) {
         ConnectionRequest req = new ConnectionRequest();
-        String url = Statics.BASE_URL + "/deletePostJSON/" + id;
+        String url = Statics.BASE_URL + "/deleteCommentJSON/" + id;
         req.setUrl(url);
 
         // req.setPost(false);
@@ -109,9 +112,9 @@ public class ServicePost {
         NetworkManager.getInstance().addToQueueAndWait(req);
 
     }
-     public boolean modifPost(Post p) {
-        String url = Statics.BASE_URL+"/updatePostJSON/"+ p.getId() +"?title=" + p.getTitle() + "&description=" + p.getDescription(); //création de l'URL
-         System.out.println("modif "+p);     
+        public boolean modifComment(Comment c ) {
+        String url = Statics.BASE_URL+"/updateCommentJSON/"+ c.getId() +"?content=" + c.getContent()+ "&rating=" + c.getRating(); //création de l'URL
+         System.out.println("modif "+c);     
          req.setUrl(url);
         req.addResponseListener(new ActionListener<NetworkEvent>() {
             @Override
@@ -122,18 +125,5 @@ public class ServicePost {
         });
         NetworkManager.getInstance().addToQueueAndWait(req);
         return resultOK;
-    }
-     public void detailPost(int id ) {
-        String url = Statics.BASE_URL + "/showPostJSON/"+id; //création de l'URL
-        req.setUrl(url);
-        req.addResponseListener(new ActionListener<NetworkEvent>() {
-            @Override
-            public void actionPerformed(NetworkEvent evt) {
-                resultOK = req.getResponseCode() == 200; 
-                req.removeResponseListener(this);
-            }
-        });
-        NetworkManager.getInstance().addToQueueAndWait(req);
-       
     }
 }

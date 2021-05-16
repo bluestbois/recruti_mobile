@@ -6,6 +6,7 @@
 package com.mycompany.myapp.gui;
 
 import com.codename1.io.Preferences;
+import static com.codename1.push.PushContent.setTitle;
 import com.codename1.ui.Button;
 import com.codename1.ui.Command;
 import com.codename1.ui.Dialog;
@@ -15,46 +16,46 @@ import com.codename1.ui.TextField;
 import com.codename1.ui.events.ActionEvent;
 import com.codename1.ui.events.ActionListener;
 import com.codename1.ui.layouts.BoxLayout;
+import com.mycompany.myapp.entities.Comment;
 import com.mycompany.myapp.entities.Forum;
+import com.mycompany.myapp.entities.Post;
+import com.mycompany.myapp.services.ServiceComment;
 import com.mycompany.myapp.services.ServiceForum;
 
 /**
  *
  * @author ASUS
  */
-public class ModifForumForm extends Form {
+public class ModifCommentForm extends Form{
+     Forum current;
 
-    Forum current;
-
-    public ModifForumForm(Form previous, Forum f) {
+    public ModifCommentForm(Form previous, Comment c,Post p) {
 
         setTitle("Update Forum");
         setLayout(BoxLayout.y());
-        System.out.println("Forum a modif "+f);
-        int id = f.getId();
-        TextField tfTitleM = new TextField();
-        TextField tfDescriptionM = new TextField();
-        TextField tfIdM = new TextField();
+        System.out.println("Comment a modif "+c);
+        int id = c.getId();
+        TextField tfContentM = new TextField();
+        TextField tfRatingM = new TextField();
         
         Button btnValider = new Button("Update Forum");
         
-        tfTitleM.setText(f.getTitle());
-        tfDescriptionM.setText(f.getDescription());
+        tfContentM.setText(c.getContent() );
+        tfRatingM.setText(String.valueOf(c.getRating()));
         
-        addAll(tfTitleM, tfDescriptionM, btnValider);
+        addAll(tfContentM, tfRatingM, btnValider);
         btnValider.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                if ((tfTitleM.getText().length() == 0) || (tfDescriptionM.getText().length() == 0)) {
+                if ((tfContentM.getText().length() == 0) || (tfRatingM.getText().length() == 0)) {
                     Dialog.show("Alert", "Please fill all the fields", new Command("OK"));
                 } else {
                     try {
 
-                        Forum f = new Forum(tfTitleM.getText(), tfDescriptionM.getText(),id);
-                        if (ServiceForum.getInstance().modifForum(f)) {
+                        Comment c = new Comment(tfContentM.getText(), Integer.parseInt(tfRatingM.getText()),id);
+                        if (ServiceComment.getInstance().modifComment(c)) {
                             Dialog.show("Success", "Connection accepted", new Command("OK"));
-                            Preferences.clearAll();
-                            new ListForumsForm().show();
+                            new ListeCommentForm(previous,p).show();
                         } else {
                             Dialog.show("ERROR", "Server error", new Command("OK"));
                         }

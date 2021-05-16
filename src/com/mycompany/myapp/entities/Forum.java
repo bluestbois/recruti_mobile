@@ -5,7 +5,7 @@
  */
 package com.mycompany.myapp.entities;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  *
@@ -15,7 +15,7 @@ public class Forum {
 
     private int id,idC,idR;
     private String title, description;
-    private List<Post> posts;
+    private ArrayList<Post> Posts;
 
     public Forum() {
     }
@@ -32,6 +32,13 @@ public class Forum {
         this.title = title;
         this.description = description;
     }
+
+    public Forum(int id, String title, String description, ArrayList<Post> Posts) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.Posts = Posts;
+    }
 public Forum(int id, String title, String description, int idR) {
         this.id = id;
         this.idR = idR;
@@ -43,15 +50,11 @@ public Forum(int id, String title, String description, int idR) {
         this.description = description;
     }
 
-    public Forum(int id, int idC, int idR, String title, String description, List<Post> posts) {
+    public Forum(String title, String description,int id ) {
         this.id = id;
-        this.idC = idC;
-        this.idR = idR;
         this.title = title;
         this.description = description;
-        this.posts = posts;
     }
-
     public int getId() {
         return id;
     }
@@ -92,20 +95,19 @@ public Forum(int id, String title, String description, int idR) {
         this.idR = idR;
     }
 
-    public List<Post> getPosts() {
-        return posts;
+    public ArrayList<Post> getPosts() {
+        return Posts;
     }
 
-    public void setPosts(List<Post> posts) {
-        this.posts = posts;
+    public void setPosts(ArrayList<Post> Posts) {
+        this.Posts = Posts;
     }
 
     @Override
     public String toString() {
-        return "Forum{" + "id=" + id + ", idC=" + idC + ", idR=" + idR + ", title=" + title + ", description=" + description + ", posts=" + posts + '}';
+        return "Forum{" + "id=" + id + ", idC=" + idC + ", idR=" + idR + ", title=" + title + ", description=" + description + '}';
     }
 
-  
    
 
 }
