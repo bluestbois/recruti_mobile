@@ -8,9 +8,12 @@ package com.mycompany.myapp.gui;
 import com.codename1.components.SpanLabel;
 import com.codename1.io.NetworkEvent;
 import com.codename1.io.NetworkManager;
+import com.codename1.notifications.LocalNotification;
 import com.codename1.ui.Button;
 import com.codename1.ui.Command;
+import com.codename1.ui.Container;
 import com.codename1.ui.Dialog;
+import com.codename1.ui.Display;
 import com.codename1.ui.FontImage;
 import com.codename1.ui.Form;
 import com.codename1.ui.Label;
@@ -35,7 +38,7 @@ public class ListForumsForm extends Form {
     Form current;
 
     public ListForumsForm() {
-         setTitle("Forum");
+        setTitle("Forum");
         setLayout(BoxLayout.y());
 
         TextField tfTitle = new TextField("", "ForumTitle");
@@ -49,8 +52,9 @@ public class ListForumsForm extends Form {
                     Dialog.show("Alert", "Please fill all the fields", new Command("OK"));
                 } else {
                     try {
-                        Forum f = new Forum(tfTitle.getText(),tfDescription.getText());
+                        Forum f = new Forum(tfTitle.getText(), tfDescription.getText());
                         if (ServiceForum.getInstance().addForum(f)) {
+                             new ListForumsForm().show();
                             Dialog.show("Success", "Connection accepted", new Command("OK"));
                         } else {
                             Dialog.show("ERROR", "Server error", new Command("OK"));
@@ -74,14 +78,13 @@ public class ListForumsForm extends Form {
             SpanLabel sp = new SpanLabel();
             Button Delete = new Button("D");
             Button Modif = new Button("M");
-
+            Container box = BoxLayout.encloseXCenter(spTitle, Delete, Modif);
             spTitle.setText("Title : " + obj.getTitle());
             spTitle.addActionListener(e -> {
                 ServiceForum.getInstance().detailForum(obj.getId());
-                System.out.println("heeeere"+obj.getId());
-                new ListPostForm(current,obj).show();
-                
-                        
+                System.out.println("heeeere" + obj.getId());
+                new ListPostForm(current, obj).show();
+
             });
             sp.setText("Description : " + obj.getDescription());
             Delete.addActionListener(e
@@ -89,18 +92,19 @@ public class ListForumsForm extends Form {
                 System.out.println(obj.getId());
 
                 ServiceForum.getInstance().deleteForum(obj.getId());
+
                 new ListForumsForm().show();
             });
             Modif.addActionListener((evt) -> {
-               new ModifForumForm(current,obj).show();
+                new ModifForumForm(current, obj).show();
 
             });
 
-            addAll(spTitle, Delete, Modif, sp);
+            addAll(box, sp);
         }
         // sp.setText(new ServiceForum().getAllForums().toString());
 
-        getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, e -> current.showBack());
+        /// getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, e -> current.showBack());
     }
 
 }

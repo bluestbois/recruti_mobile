@@ -56,6 +56,10 @@ public class ServicePost {
                 f.setTitle(obj.get("title").toString());
 
                 f.setDescription(obj.get("description").toString());
+                float views = Float.parseFloat(obj.get("views").toString());
+                f.setViews((int) views);
+                float noc = Float.parseFloat(obj.get("NOC").toString());
+                f.setNoc((int) noc);
 
                 System.out.print(obj);
 
@@ -109,31 +113,76 @@ public class ServicePost {
         NetworkManager.getInstance().addToQueueAndWait(req);
 
     }
-     public boolean modifPost(Post p) {
-        String url = Statics.BASE_URL+"/updatePostJSON/"+ p.getId() +"?title=" + p.getTitle() + "&description=" + p.getDescription(); //création de l'URL
-         System.out.println("modif "+p);     
-         req.setUrl(url);
+
+    public boolean modifPost(Post p) {
+        String url = Statics.BASE_URL + "/updatePostJSON/" + p.getId() + "?title=" + p.getTitle() + "&description=" + p.getDescription(); //création de l'URL
+        System.out.println("modif " + p);
+        req.setUrl(url);
         req.addResponseListener(new ActionListener<NetworkEvent>() {
             @Override
             public void actionPerformed(NetworkEvent evt) {
-                resultOK = req.getResponseCode() == 200; 
+                resultOK = req.getResponseCode() == 200;
                 req.removeResponseListener(this);
             }
         });
         NetworkManager.getInstance().addToQueueAndWait(req);
         return resultOK;
     }
-     public void detailPost(int id ) {
-        String url = Statics.BASE_URL + "/showPostJSON/"+id; //création de l'URL
+
+    public void detailPost(int id) {
+        String url = Statics.BASE_URL + "/showPostJSON/" + id; //création de l'URL
         req.setUrl(url);
         req.addResponseListener(new ActionListener<NetworkEvent>() {
             @Override
             public void actionPerformed(NetworkEvent evt) {
-                resultOK = req.getResponseCode() == 200; 
+                resultOK = req.getResponseCode() == 200;
                 req.removeResponseListener(this);
             }
         });
         NetworkManager.getInstance().addToQueueAndWait(req);
-       
+
+    }
+
+    public boolean modifPostViews(Post p) {
+        String url = Statics.BASE_URL + "/updateViewsPostJSON/" + p.getId(); //création de l'URL
+        System.out.println("modif " + p);
+        req.setUrl(url);
+        req.addResponseListener(new ActionListener<NetworkEvent>() {
+            @Override
+            public void actionPerformed(NetworkEvent evt) {
+                resultOK = req.getResponseCode() == 200;
+                req.removeResponseListener(this);
+            }
+        });
+        NetworkManager.getInstance().addToQueueAndWait(req);
+        return resultOK;
+    }
+     public boolean modifPostNOCAdd(Post p) {
+        String url = Statics.BASE_URL + "/addnocPostJSON/" + p.getId(); //création de l'URL
+        System.out.println("modif " + p);
+        req.setUrl(url);
+        req.addResponseListener(new ActionListener<NetworkEvent>() {
+            @Override
+            public void actionPerformed(NetworkEvent evt) {
+                resultOK = req.getResponseCode() == 200;
+                req.removeResponseListener(this);
+            }
+        });
+        NetworkManager.getInstance().addToQueueAndWait(req);
+        return resultOK;
+    }
+      public boolean modifPostNOCDelete(Post p) {
+        String url = Statics.BASE_URL + "/deletenocPostJSON/" + p.getId(); //création de l'URL
+        System.out.println("modif " + p);
+        req.setUrl(url);
+        req.addResponseListener(new ActionListener<NetworkEvent>() {
+            @Override
+            public void actionPerformed(NetworkEvent evt) {
+                resultOK = req.getResponseCode() == 200;
+                req.removeResponseListener(this);
+            }
+        });
+        NetworkManager.getInstance().addToQueueAndWait(req);
+        return resultOK;
     }
 }

@@ -26,6 +26,9 @@ import com.mycompany.myapp.entities.Post;
 import com.mycompany.myapp.services.ServiceComment;
 import static com.mycompany.myapp.services.ServiceForum.instance;
 import com.mycompany.myapp.services.ServicePost;
+
+import com.codename1.ui.Container;
+import com.codename1.ui.FontImage;
 import java.util.ArrayList;
 
 /**
@@ -37,16 +40,14 @@ public class ListeCommentForm extends Form {
     public ArrayList<Comment> comments;
     Form current;
 
-    public ListeCommentForm(Form previous, Post p) {
+    public ListeCommentForm(Form previous, Post p,Forum f) {
         setTitle("List Comments");
 
         setLayout(BoxLayout.y());
         TextField Content = new TextField("", "Comment content");
         TextField Rating = new TextField("", "Comment Rating");
         Button btnValider = new Button("Add Comment");
-        Button Modifbtn = new Button("Modif valider ");
-
-        addAll(Content, Rating, btnValider, Modifbtn);
+        addAll(Content, Rating, btnValider);
 
         btnValider.addActionListener(new ActionListener() {
             @Override
@@ -57,8 +58,9 @@ public class ListeCommentForm extends Form {
                     try {
                         Comment c = new Comment(Content.getText(), Integer.valueOf(Rating.getText()), p.getId());
                         if (ServiceComment.getInstance().addComment(c, p.getId())) {
+                            ServicePost.getInstance().modifPostNOCAdd(p);
                             Dialog.show("connectedd", "succed", new Command("OK"));
-                            new ListeCommentForm(previous, p).show();
+                            new ListeCommentForm(previous, p,f).show();
                         } else {
                             Dialog.show("ERROR", "Server error", new Command("OK"));
                         }
@@ -81,6 +83,7 @@ public class ListeCommentForm extends Form {
             Button Delete = new Button("D");
             Button Modif = new Button("M");
 
+            Container box = BoxLayout.encloseXCenter(spTitle, Delete, Modif);
             spTitle.setText("Content : " + obj.getContent());
 
             sp.setText("Rating : " + obj.getRating());
@@ -89,18 +92,17 @@ public class ListeCommentForm extends Form {
                 System.out.println(obj.getId());
 
                 ServiceComment.getInstance().deleteComment(obj.getId());
-                new ListeCommentForm(previous, p).show();
+                ServicePost.getInstance().modifPostNOCDelete(p);
+                new ListeCommentForm(previous, p,f).show();
             });
             Modif.addActionListener((ActionEvent evt) -> {
-                new ModifCommentForm(previous, obj,p).show();
-             
+                new ModifCommentForm(previous, obj, p,f).show();
+
             });
-            addAll(spTitle, Delete, Modif, sp);
+            addAll(box, sp);
         }
-
-      
+ getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, e -> new ListPostForm(previous,f).showBack());
+  
     }
-
- 
 
 }

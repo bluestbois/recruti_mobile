@@ -39,7 +39,6 @@ public class ListPostForm extends Form {
 
     public ArrayList<Forum> forums;
     public ArrayList<Post> posts;
-    Form current;
     // static  TextField tfIdF = new TextField();
 //liste des post (forum id ) 
 
@@ -52,9 +51,8 @@ public class ListPostForm extends Form {
         TextField Title = new TextField("", "Post Title");
         TextField Description = new TextField("", "description Post");
         Button btnValider = new Button("Add Post");
-        Button Modifbtn = new Button("Modif valider ");
-               
-        addAll(Title, Description, btnValider,Modifbtn);
+
+        addAll(Title, Description, btnValider);
 
         btnValider.addActionListener(new ActionListener() {
             @Override
@@ -63,7 +61,7 @@ public class ListPostForm extends Form {
                     Dialog.show("Alert", "Please fill all the fields", new Command("OK"));
                 } else {
                     try {
-                        Post p = new Post( Title.getText(),Description.getText(), f.getId());
+                        Post p = new Post(Title.getText(), Description.getText(), f.getId());
                         if (ServicePost.getInstance().addPost(p, f.getId())) {
                             Dialog.show("connectedd", "succed", new Command("OK"));
                             new ListPostForm(previous, f).show();
@@ -95,20 +93,26 @@ public class ListPostForm extends Form {
             setLayout(BoxLayout.y());
 
             Button spTitle = new Button();
-            SpanLabel sp = new SpanLabel();
+            SpanLabel spDescription = new SpanLabel();
+            SpanLabel spviews = new SpanLabel();
+            SpanLabel spNOC = new SpanLabel();
+
             Button Delete = new Button("D");
             Button Modif = new Button("M");
+            Container box = BoxLayout.encloseXCenter(spTitle, Delete, Modif, spviews, spNOC);
+            spviews.setText(Integer.toString(obj.getViews()));
+            spNOC.setText(Integer.toString(obj.getNoc()));
 
             spTitle.setText("Title : " + obj.getTitle());
-             spTitle.addActionListener(e -> {
+            spTitle.addActionListener(e -> {
                 ServicePost.getInstance().detailPost(obj.getId());
-                System.out.println("heeeere"+obj.getId());
-                new ListeCommentForm(previous,obj).show();
-                
-                        
+                System.out.println("heeeere" + obj.getId());
+                ServicePost.getInstance().modifPostViews(obj);
+                new ListeCommentForm(previous, obj, f).show();
+
             });
 
-            sp.setText("Description : " + obj.getDescription());
+            spDescription.setText("Description : " + obj.getDescription());
             Delete.addActionListener(e
                     -> {
                 System.out.println(obj.getId());
@@ -117,13 +121,14 @@ public class ListPostForm extends Form {
                 new ListPostForm(previous, f).show();
             });
             Modif.addActionListener((ActionEvent evt) -> {
-               new ModifPostForm(previous,obj).show();
+                new ModifPostForm(previous, obj).show();
 
             });
-            addAll(spTitle, Delete, Modif, sp);
+
+            addAll(box, spDescription);
         }
         // sp.setText(new ServiceForum().getAllForums().toString());
-        getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, e -> previous.showBack());
+        getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, e -> new ListForumsForm().showBack());
     }
 
 }

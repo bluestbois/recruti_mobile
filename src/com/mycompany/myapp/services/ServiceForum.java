@@ -46,7 +46,8 @@ public class ServiceForum {
     }
 
     public boolean addForum(Forum f) {
-        String url = Statics.BASE_URL+"/addForumJSON/new?title="+f.getTitle()+"&description="+ f.getDescription(); //création de l'URL
+        String url = Statics.BASE_URL+"/addFoumJSON/new?title="+f.getTitle()+"&description="+f.getDescription(); //création de l'URL
+        System.out.println(url);
         req.setUrl(url);
         req.addResponseListener(new ActionListener<NetworkEvent>() {
             @Override
@@ -87,7 +88,7 @@ public class ServiceForum {
     }
 
     public ArrayList<Forum> getAllForums() {
-        String url = Statics.BASE_URL + "/AllForums";
+        String url = Statics.BASE_URL +"/AllForums";
         req.setUrl(url);
         req.setPost(false);
         req.addResponseListener(new ActionListener<NetworkEvent>() {

@@ -66,9 +66,8 @@ public class ModifForumForm extends Form {
 
             }
         });
-
-        getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK,
-                e -> previous.showBack()); // Revenir vers l'interface précédente
+  getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, e -> new ListForumsForm().showBack());
+   
 
     }
 }

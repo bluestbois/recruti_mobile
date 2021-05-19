@@ -29,7 +29,7 @@ import com.mycompany.myapp.services.ServiceForum;
 public class ModifCommentForm extends Form{
      Forum current;
 
-    public ModifCommentForm(Form previous, Comment c,Post p) {
+    public ModifCommentForm(Form previous, Comment c,Post p,Forum f) {
 
         setTitle("Update Forum");
         setLayout(BoxLayout.y());
@@ -55,7 +55,7 @@ public class ModifCommentForm extends Form{
                         Comment c = new Comment(tfContentM.getText(), Integer.parseInt(tfRatingM.getText()),id);
                         if (ServiceComment.getInstance().modifComment(c)) {
                             Dialog.show("Success", "Connection accepted", new Command("OK"));
-                            new ListeCommentForm(previous,p).show();
+                            new ListeCommentForm(previous,p,f).show();
                         } else {
                             Dialog.show("ERROR", "Server error", new Command("OK"));
                         }
@@ -68,8 +68,6 @@ public class ModifCommentForm extends Form{
             }
         });
 
-        getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK,
-                e -> previous.showBack()); // Revenir vers l'interface précédente
-
+        
     }
 }

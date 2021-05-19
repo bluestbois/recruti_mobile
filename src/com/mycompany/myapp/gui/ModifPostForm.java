@@ -26,7 +26,7 @@ import com.mycompany.myapp.services.ServicePost;
  */
 public class ModifPostForm extends Form {
 
-    Forum current;
+    
 
     public ModifPostForm(Form previous, Post p) {
         setTitle("Update Post");
@@ -37,7 +37,7 @@ public class ModifPostForm extends Form {
         TextField tfTitleM = new TextField();
         TextField tfDescriptionM = new TextField();
 
-        Button btnValider = new Button("Update Forum");
+        Button btnValider = new Button("Update Post");
 
         tfTitleM.setText(p.getTitle());
         tfDescriptionM.setText(p.getDescription());
@@ -67,8 +67,7 @@ public class ModifPostForm extends Form {
             }
         });
 
-        getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK,
-                e -> previous.showBack()); // Revenir vers l'interface précédente
+      
 
     }
 }
