@@ -6,6 +6,7 @@
 package com.mycompany.myapp.gui;
 
 import com.codename1.components.SpanLabel;
+import com.codename1.components.ToastBar;
 import com.codename1.io.Preferences;
 import com.codename1.ui.Button;
 import com.codename1.ui.Command;
@@ -39,8 +40,10 @@ public class ListeCommentForm extends Form {
 
     public ArrayList<Comment> comments;
     Form current;
+    int numbreNoc = 0;
+    int RatingC;
 
-    public ListeCommentForm(Form previous, Post p,Forum f) {
+    public ListeCommentForm(Form previous, Post p, Forum f) {
         setTitle("List Comments");
 
         setLayout(BoxLayout.y());
@@ -58,9 +61,10 @@ public class ListeCommentForm extends Form {
                     try {
                         Comment c = new Comment(Content.getText(), Integer.valueOf(Rating.getText()), p.getId());
                         if (ServiceComment.getInstance().addComment(c, p.getId())) {
+                             ToastBar.showMessage("Add Comment success ", FontImage.MATERIAL_ADD);
                             ServicePost.getInstance().modifPostNOCAdd(p);
-                            Dialog.show("connectedd", "succed", new Command("OK"));
-                            new ListeCommentForm(previous, p,f).show();
+                           // Dialog.show("connectedd", "succed", new Command("OK"));
+                            new ListeCommentForm(previous, p, f).show();
                         } else {
                             Dialog.show("ERROR", "Server error", new Command("OK"));
                         }
@@ -82,7 +86,11 @@ public class ListeCommentForm extends Form {
             SpanLabel sp = new SpanLabel();
             Button Delete = new Button("D");
             Button Modif = new Button("M");
-
+            numbreNoc++;
+            int r =obj.getRating();
+            RatingC=RatingC+obj.getRating();
+            System.out.println("Rating C   :" + RatingC);
+            System.out.println("nombre de comment  :" + numbreNoc);
             Container box = BoxLayout.encloseXCenter(spTitle, Delete, Modif);
             spTitle.setText("Content : " + obj.getContent());
 
@@ -93,16 +101,17 @@ public class ListeCommentForm extends Form {
 
                 ServiceComment.getInstance().deleteComment(obj.getId());
                 ServicePost.getInstance().modifPostNOCDelete(p);
-                new ListeCommentForm(previous, p,f).show();
+                ToastBar.showMessage("Delete Comment success ", FontImage.MATERIAL_DELETE_FOREVER);
+                new ListeCommentForm(previous, p, f).show();
             });
             Modif.addActionListener((ActionEvent evt) -> {
-                new ModifCommentForm(previous, obj, p,f).show();
+                new ModifCommentForm(previous, obj, p, f).show();
 
             });
             addAll(box, sp);
         }
- getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, e -> new ListPostForm(previous,f).showBack());
-  
+        getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, e -> new ListPostForm(previous, f).showBack());
+
     }
 
 }

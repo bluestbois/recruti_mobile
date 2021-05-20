@@ -5,6 +5,7 @@
  */
 package com.mycompany.myapp.gui;
 
+import com.codename1.components.ToastBar;
 import com.codename1.io.Preferences;
 import static com.codename1.push.PushContent.setTitle;
 import com.codename1.ui.Button;
@@ -54,7 +55,8 @@ public class ModifCommentForm extends Form{
 
                         Comment c = new Comment(tfContentM.getText(), Integer.parseInt(tfRatingM.getText()),id);
                         if (ServiceComment.getInstance().modifComment(c)) {
-                            Dialog.show("Success", "Connection accepted", new Command("OK"));
+                            ToastBar.showMessage("Update Comment success ", FontImage.MATERIAL_UPDATE);
+                           // Dialog.show("Success", "Connection accepted", new Command("OK"));
                             new ListeCommentForm(previous,p,f).show();
                         } else {
                             Dialog.show("ERROR", "Server error", new Command("OK"));

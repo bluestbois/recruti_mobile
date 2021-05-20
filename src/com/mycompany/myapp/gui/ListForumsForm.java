@@ -6,6 +6,7 @@
 package com.mycompany.myapp.gui;
 
 import com.codename1.components.SpanLabel;
+import com.codename1.components.ToastBar;
 import com.codename1.io.NetworkEvent;
 import com.codename1.io.NetworkManager;
 import com.codename1.notifications.LocalNotification;
@@ -54,8 +55,10 @@ public class ListForumsForm extends Form {
                     try {
                         Forum f = new Forum(tfTitle.getText(), tfDescription.getText());
                         if (ServiceForum.getInstance().addForum(f)) {
-                             new ListForumsForm().show();
-                            Dialog.show("Success", "Connection accepted", new Command("OK"));
+                            ToastBar.showMessage("Add Forum success ", FontImage.MATERIAL_ADD);
+                            new ListForumsForm().show();
+
+                            //Dialog.show("Success", "Connection accepted", new Command("OK"));
                         } else {
                             Dialog.show("ERROR", "Server error", new Command("OK"));
                         }
@@ -78,24 +81,32 @@ public class ListForumsForm extends Form {
             SpanLabel sp = new SpanLabel();
             Button Delete = new Button("D");
             Button Modif = new Button("M");
+
             Container box = BoxLayout.encloseXCenter(spTitle, Delete, Modif);
+
             spTitle.setText("Title : " + obj.getTitle());
+
             spTitle.addActionListener(e -> {
                 ServiceForum.getInstance().detailForum(obj.getId());
                 System.out.println("heeeere" + obj.getId());
+                 ToastBar.showMessage("Details Forum ", FontImage.MATERIAL_INFO);
                 new ListPostForm(current, obj).show();
 
             });
             sp.setText("Description : " + obj.getDescription());
+
             Delete.addActionListener(e
                     -> {
                 System.out.println(obj.getId());
 
                 ServiceForum.getInstance().deleteForum(obj.getId());
-
+                ToastBar.showMessage("Delete Forum success ", FontImage.MATERIAL_DELETE_FOREVER);
                 new ListForumsForm().show();
             });
+
             Modif.addActionListener((evt) -> {
+                
+               
                 new ModifForumForm(current, obj).show();
 
             });

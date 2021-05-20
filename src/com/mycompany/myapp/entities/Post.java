@@ -38,10 +38,10 @@ public class Post {
         this.forum_id = forum_id;
     }
 
-    public Post(String title, String description, int forum_id) {
+    public Post(String title, String description, int id) {
         this.title = title;
         this.description = description;
-        this.forum_id = forum_id;
+        this.id = id;
     }
 
     public Post(int id, String title, String description, int views, int noc, String date, int idF, int idC, int idR) {
